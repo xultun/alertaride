@@ -161,6 +161,10 @@
                     <option value="🌍">Otro 🌍</option>
                 </select>
             </div>
+            <div class="info">
+                <p><strong>Latitud:</strong> <span id="lat"></span></p>
+                <p><strong>Longitud:</strong> <span id="lng"></span></p>
+            </div>
             <div class="map-container" id="popupMap"></div>
             <button class="btn" id="saveBtn" onclick="saveDestino()">Guardar Destino</button>
             <button class="btn" onclick="closePopup()">Cancelar</button>
@@ -199,6 +203,10 @@
 
         popupMap.on('click', function(e) {
             popupMarker.setLatLng(e.latlng);
+            selectedLatLng = e.latlng; // Guardar las coordenadas seleccionadas
+            document.getElementById("saveBtn").disabled = false; // Habilitar el botón de guardar
+            document.getElementById("lat").textContent = e.latlng.lat; // Mostrar latitud en tiempo real
+            document.getElementById("lng").textContent = e.latlng.lng; // Mostrar longitud en tiempo real
         });
 
         let selectedLatLng = null;
@@ -206,7 +214,8 @@
         // Función para abrir el pop-up
         function openPopup() {
             document.getElementById('popup').style.display = 'flex';
-            selectedLatLng = null;
+            selectedLatLng = null; // Resetear la ubicación seleccionada
+            document.getElementById("saveBtn").disabled = true; // Deshabilitar el botón al abrir el pop-up
         }
 
         // Función para cerrar el pop-up
