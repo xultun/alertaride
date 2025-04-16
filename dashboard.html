@@ -170,10 +170,28 @@
                 icon: icon
             };
 
-            destinos.push(newDestino);
-            localStorage.setItem("destinos", JSON.stringify(destinos));
-            loadDestinos(); // Actualiza la lista de destinos
-            document.getElementById("saveBtn").disabled = true; // Deshabilitar el botón después de guardar
+            // Usamos geocodificación inversa para obtener la dirección
+            getAddress(newDestino.lat, newDestino.lng, function(address) {
+                newDestino.address = address;
+                destinos.push(newDestino);
+                localStorage.setItem("destinos", JSON.stringify(destinos));
+                loadDestinos(); // Actualiza la lista de destinos
+                document.getElementById("saveBtn").disabled = true; // Deshabilitar el botón después de guardar
+            });
+        }
+
+        // Función para obtener la dirección usando la API de geocodificación inversa de OpenStreetMap
+        function getAddress(lat, lng, callback) {
+            const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const address = data.display_name || "Dirección no disponible";
+                    callback(address);
+                })
+                .catch(() => {
+                    callback("Dirección no disponible");
+                });
         }
 
         // Función para cargar los destinos guardados
@@ -193,8 +211,12 @@
                 nameText.style.fontWeight = "bold"; // Nombre en negrita
                 li.appendChild(nameText);
 
+                const addressText = document.createElement("span");
+                addressText.textContent = ` - ${destino.address}`;
+                li.appendChild(addressText);
+
                 const deleteBtn = document.createElement("span");
-                deleteBtn.textContent = " X";
+                deleteBtn.textContent = " ❌";
                 deleteBtn.classList.add("delete-btn");
                 deleteBtn.onclick = function() {
                     deleteDestino(destino);
