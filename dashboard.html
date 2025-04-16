@@ -7,129 +7,137 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f3f3f3;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            height: 100vh;
-            text-align: center;
-        }
+    /* Estilos previos */
+    body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f3f3f3;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        height: 100vh;
+        text-align: center;
+    }
+    .header {
+        width: 100%;
+        background-color: #ff8c42;
+        padding: 20px;
+        color: white;
+    }
+    h2 {
+        font-size: 2.5rem;
+    }
+    .map-container {
+        margin-top: 20px;
+        width: 80%;
+        height: 300px;
+        background: #fff;
+        margin-bottom: 20px;
+    }
+    .info {
+        font-size: 1.2rem;
+        margin: 10px 0;
+    }
+    .btn {
+        background: #0072ff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1.2rem;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-top: 20px;
+        width: 80%;
+    }
+    .btn:hover {
+        background: #0057d9;
+    }
+    .destinations {
+        margin-top: 20px;
+        width: 80%;
+        text-align: left;
+    }
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    li {
+        margin: 10px 0;
+        padding: 10px;
+        background-color: #f4f4f4;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+    li:hover {
+        background-color: #e2e2e2;
+    }
+    .delete-btn {
+        color: red;
+        cursor: pointer;
+    }
+    .icon {
+        font-size: 1.5rem;
+        margin-right: 10px;
+    }
+    .destination-form {
+        margin-bottom: 20px;
+    }
+    /* Pop-up Styles */
+    #popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+    .popup-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 400px;
+        text-align: left;
+        height: auto;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+    .popup-content h3 {
+        margin: 0 0 10px;
+    }
+    .popup-content input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+    }
+    .popup-content button {
+        width: 100%;
+    }
+    /* Aquí se agrega el z-index */
+    #map {
+        z-index: -9999;
+    }
+    
+    /* Estilo para el mapa dentro del pop-up */
+    #popupMap {
+        width: 100%;  /* Hacer que ocupe el ancho completo del pop-up */
+        height: 300px; /* Altura del mapa */
+        border-radius: 10px;
+    }
+</style>
 
-#map {
-    z-index: -9999;
-}
-
-        .header {
-            width: 100%;
-            background-color: #ff8c42;
-            padding: 20px;
-            color: white;
-        }
-        h2 {
-            font-size: 2.5rem;
-        }
-        .map-container {
-            margin-top: 20px;
-            width: 80%;
-            height: 300px;
-            background: #fff;
-            margin-bottom: 20px;
-        }
-        .info {
-            font-size: 1.2rem;
-            margin: 10px 0;
-        }
-        .btn {
-            background: #0072ff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1.2rem;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 20px;
-            width: 80%;
-        }
-        .btn:hover {
-            background: #0057d9;
-        }
-        .destinations {
-            margin-top: 20px;
-            width: 80%;
-            text-align: left;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            margin: 10px 0;
-            padding: 10px;
-            background-color: #f4f4f4;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-        }
-        li:hover {
-            background-color: #e2e2e2;
-        }
-        .delete-btn {
-            color: red;
-            cursor: pointer;
-        }
-        .icon {
-            font-size: 1.5rem;
-            margin-right: 10px;
-        }
-        .destination-form {
-            margin-bottom: 20px;
-        }
-        /* Pop-up Styles */
-        #popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-        .popup-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 400px;
-            text-align: left;
-            height: auto;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-        .popup-content h3 {
-            margin: 0 0 10px;
-        }
-        .popup-content input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-        }
-        .popup-content button {
-            width: 100%;
-        }
-    </style>
 </head>
 <body>
     <div class="header">
