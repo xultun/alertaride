@@ -69,6 +69,9 @@
             border-radius: 10px;
             cursor: pointer;
         }
+        li:hover {
+            background-color: #e2e2e2;
+        }
     </style>
 </head>
 <body>
@@ -100,8 +103,22 @@
                 <p><strong>Correo:</strong> ${user.email}</p>
                 <p><strong>Celular:</strong> ${user.phone}</p>`;
 
-            // Mostrar destinos frecuentes
-            loadDestinos();
+            // Simulación de destinos frecuentes con nombres
+            const destinos = [
+                { name: "Casa", lat: -10.0121, lng: -70.8398 },
+                { name: "Trabajo", lat: -6.4476, lng: 14.9414 },
+            ];
+            const destinosList = document.getElementById("destinosList");
+            destinos.forEach(destino => {
+                const li = document.createElement("li");
+                li.textContent = `${destino.name} - Lat: ${destino.lat.toFixed(4)}, Lng: ${destino.lng.toFixed(4)}`;
+                li.onclick = function() {
+                    // Mover el mapa a la ubicación seleccionada
+                    map.setView([destino.lat, destino.lng], 13);
+                    marker.setLatLng([destino.lat, destino.lng]);
+                };
+                destinosList.appendChild(li);
+            });
         }
 
         // Inicialización del mapa de Leaflet
