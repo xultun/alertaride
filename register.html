@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Registro - AlertaRide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Para íconos de FontAwesome -->
     <style>
         body {
-            font-family: 'Nunito', sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #00c6ff, #0072ff);
-            color: white;
+            background-color: #f3f3f3; /* Gris claro */
+            color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -17,46 +19,82 @@
             height: 100vh;
             text-align: center;
         }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        i {
+            font-size: 3rem;
+            color: #ff8c42; /* Naranja */
+        }
         h2 {
             font-size: 2.5rem;
+            margin-top: 20px;
+            color: #333;
         }
         input[type="text"], input[type="email"], input[type="password"], input[type="date"] {
-            padding: 10px;
-            width: 80%;
+            padding: 15px;
+            width: 100%;
             font-size: 1rem;
-            border-radius: 20px;
+            border-radius: 30px;
+            border: 1px solid #ddd;
             margin-bottom: 20px;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+        input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, input[type="date"]:focus {
+            outline: none;
+            border-color: #ff8c42;
+            box-shadow: 0 0 10px rgba(255, 140, 66, 0.5);
         }
         button {
-            background: #ff8c42;
+            background: #0072ff; /* Azul como en la imagen */
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 15px 30px;
             font-size: 1.2rem;
-            border-radius: 20px;
+            border-radius: 30px;
             cursor: pointer;
+            width: 100%;
             transition: 0.3s;
+            margin-top: 10px;
         }
         button:hover {
-            background: #ffa756;
+            background: #0057d9;
         }
         p {
-            margin-top: 15px;
+            margin-top: 20px;
+            color: #333;
+        }
+        a {
+            color: #0072ff; /* Azul para el enlace */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <h2>Registro</h2>
-    <form id="registerForm">
-        <input type="text" id="fullname" placeholder="Nombre completo" required><br>
-        <input type="text" id="phone" placeholder="Número de celular" required><br>
-        <input type="email" id="email" placeholder="Correo electrónico" required><br>
-        <input type="text" id="dni" placeholder="DNI" required><br>
-        <input type="date" id="dob" placeholder="Fecha de nacimiento" required><br>
-        <input type="password" id="password" placeholder="Contraseña" required><br>
-        <button type="submit">Registrarse</button>
-    </form>
-    <p>¿Ya tienes cuenta? <a href="index.html" style="color: #ff8c42;">Inicia sesión</a></p>
+    <div class="container">
+        <i class="fa-solid fa-bell"></i> <!-- Icono de la campana -->
+        <h2>AlertaRide</h2> <!-- Nombre de la app -->
+        <form id="registerForm">
+            <input type="text" id="fullname" placeholder="Nombre completo" required><br>
+            <input type="text" id="phone" placeholder="Número de celular" required><br>
+            <input type="email" id="email" placeholder="Correo electrónico" required><br>
+            <input type="text" id="dni" placeholder="DNI" required><br>
+            <input type="date" id="dob" placeholder="Fecha de nacimiento" required><br>
+            <input type="password" id="password" placeholder="Contraseña" required><br>
+            <button type="submit">Registrarse</button>
+        </form>
+        <p>¿Ya tienes cuenta? <a href="index.html">Inicia sesión</a></p>
+    </div>
 
     <script src="users.js"></script>
     <script>
