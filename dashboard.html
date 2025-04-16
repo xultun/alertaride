@@ -112,6 +112,27 @@
             marker.setLatLng(e.latlng);
             alert("Destino seleccionado: " + e.latlng.toString());
         });
+
+        // Función para obtener la ubicación actual del usuario
+        function getUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    // Centrar el mapa en la ubicación del usuario
+                    map.setView([lat, lon], 13); // Ajustamos el zoom a nivel 13
+                    marker.setLatLng([lat, lon]); // Colocamos el marcador en la ubicación actual
+                }, function() {
+                    alert("No se pudo obtener la ubicación.");
+                });
+            } else {
+                alert("Tu navegador no soporta geolocalización.");
+            }
+        }
+
+        // Llamar a la función para obtener la ubicación al cargar la página
+        getUserLocation();
     </script>
 </body>
 </html>
