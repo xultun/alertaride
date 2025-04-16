@@ -58,6 +58,17 @@
             width: 80%;
             text-align: left;
         }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border-radius: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -74,6 +85,7 @@
         <ul id="destinosList">
             <!-- Aquí se agregarán los destinos -->
         </ul>
+        <button class="btn" onclick="saveDestinos()">Guardar Destino</button>
     </div>
 
     <button class="btn" onclick="location.href='alarmas.html'">Configurar Alarmas</button>
@@ -88,14 +100,8 @@
                 <p><strong>Correo:</strong> ${user.email}</p>
                 <p><strong>Celular:</strong> ${user.phone}</p>`;
 
-            // Simulación de destinos frecuentes
-            const destinos = ["Casa", "Trabajo", "Fiesta en la playa"];
-            const destinosList = document.getElementById("destinosList");
-            destinos.forEach(destino => {
-                const li = document.createElement("li");
-                li.textContent = destino;
-                destinosList.appendChild(li);
-            });
+            // Mostrar destinos frecuentes
+            loadDestinos();
         }
 
         // Inicialización del mapa de Leaflet
@@ -111,28 +117,39 @@
         map.on('click', function(e) {
             marker.setLatLng(e.latlng);
             alert("Destino seleccionado: " + e.latlng.toString());
+            // Guardar el destino en localStorage
+            saveDestino(e.latlng);
         });
 
-        // Función para obtener la ubicación actual del usuario
-        function getUserLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-
-                    // Centrar el mapa en la ubicación del usuario
-                    map.setView([lat, lon], 13); // Ajustamos el zoom a nivel 13
-                    marker.setLatLng([lat, lon]); // Colocamos el marcador en la ubicación actual
-                }, function() {
-                    alert("No se pudo obtener la ubicación.");
-                });
-            } else {
-                alert("Tu navegador no soporta geolocalización.");
-            }
+        // Función para guardar un destino en localStorage
+        function saveDestino(latlng) {
+            let destinos = JSON.parse(localStorage.getItem("destinos")) || [];
+            destinos.push(latlng);
+            localStorage.setItem("destinos", JSON.stringify(destinos));
+            loadDestinos(); // Actualiza la lista de destinos
         }
 
-        // Llamar a la función para obtener la ubicación al cargar la página
-        getUserLocation();
+        // Función para cargar los destinos guardados
+        function loadDestinos() {
+            let destinos = JSON.parse(localStorage.getItem("destinos")) || [];
+            const destinosList = document.getElementById("destinosList");
+            destinosList.innerHTML = ""; // Limpiar la lista
+            destinos.forEach(destino => {
+                const li = document.createElement("li");
+                li.textContent = `Lat: ${destino.lat.toFixed(4)}, Lng: ${destino.lng.toFixed(4)}`;
+                destinosList.appendChild(li);
+            });
+        }
+
+        // Función para guardar destinos frecuentemente usados
+        function saveDestinos() {
+            let destinos = JSON.parse(localStorage.getItem("destinos")) || [];
+            if (destinos.length === 0) {
+                alert("No hay destinos para guardar.");
+            } else {
+                alert("Destinos guardados correctamente.");
+            }
+        }
     </script>
 </body>
 </html>
