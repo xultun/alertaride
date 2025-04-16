@@ -81,9 +81,6 @@
             cursor: pointer;
         }
         .icon {
-            margin-right: 10px;
-        }
-        .icon input {
             font-size: 1.5rem;
             margin-right: 10px;
         }
@@ -107,10 +104,10 @@
         <div class="icon">
             <label for="iconSelect">Selecciona un ícono:</label>
             <select id="iconSelect">
-                <option value="fas fa-home">Casa</option>
-                <option value="fas fa-briefcase">Trabajo</option>
-                <option value="fas fa-store">Negocio</option>
-                <option value="fas fa-map-marker-alt">Otro</option>
+                <option value="🏠">Casa 🏠</option>
+                <option value="💼">Trabajo 💼</option>
+                <option value="🏢">Negocio 🏢</option>
+                <option value="🌍">Otro 🌍</option>
             </select>
         </div>
         <button class="btn" onclick="saveDestino()">Guardar Destino</button>
@@ -185,9 +182,9 @@
             destinosList.innerHTML = ""; // Limpiar la lista
             destinos.forEach(destino => {
                 const li = document.createElement("li");
-                const icon = document.createElement("i");
-                icon.className = destino.icon;
-                icon.style.color = "#ff8c42"; // Color del ícono
+                const icon = document.createElement("span");
+                icon.textContent = destino.icon;
+                icon.classList.add("icon");
                 li.appendChild(icon);
 
                 const nameText = document.createElement("span");
