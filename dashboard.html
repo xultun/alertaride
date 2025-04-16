@@ -87,6 +87,39 @@
         .destination-form {
             margin-bottom: 20px;
         }
+        /* Pop-up Styles */
+        #popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            text-align: left;
+        }
+        .popup-content h3 {
+            margin: 0 0 10px;
+        }
+        .popup-content input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+        .popup-content button {
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -98,21 +131,6 @@
 
     <div id="userInfo" class="info"></div>
 
-    <div class="destination-form">
-        <h3>Guardar Nuevo Destino</h3>
-        <input type="text" id="destName" placeholder="Nombre del destino" required><br>
-        <div class="icon">
-            <label for="iconSelect">Selecciona un ícono:</label>
-            <select id="iconSelect">
-                <option value="🏠">Casa 🏠</option>
-                <option value="💼">Trabajo 💼</option>
-                <option value="🏢">Negocio 🏢</option>
-                <option value="🌍">Otro 🌍</option>
-            </select>
-        </div>
-        <button class="btn" id="saveBtn" disabled>Guardar Destino</button>
-    </div>
-
     <div class="destinations">
         <h3>Destinos Frecuentes</h3>
         <ul id="destinosList">
@@ -120,7 +138,30 @@
         </ul>
     </div>
 
+    <!-- Botón para abrir el pop-up -->
+    <button class="btn" onclick="openPopup()">➕ Agregar Destino</button>
+
     <button class="btn" onclick="location.href='alarmas.html'">Configurar Alarmas</button>
+
+    <!-- Pop-up para agregar destino -->
+    <div id="popup">
+        <div class="popup-content">
+            <h3>Agregar Nuevo Destino</h3>
+            <input type="text" id="destName" placeholder="Nombre del destino" required><br>
+            <div class="icon">
+                <label for="iconSelect">Selecciona un ícono:</label>
+                <select id="iconSelect">
+                    <option value="🏠">Casa 🏠</option>
+                    <option value="💼">Trabajo 💼</option>
+                    <option value="🏢">Negocio 🏢</option>
+                    <option value="🌍">Otro 🌍</option>
+                </select>
+            </div>
+            <div class="map-container" id="popupMap"></div>
+            <button class="btn" id="saveBtn" onclick="saveDestino()">Guardar Destino</button>
+            <button class="btn" onclick="closePopup()">Cancelar</button>
+        </div>
+    </div>
 
     <script>
         const user = JSON.parse(localStorage.getItem("loggedUser"));
@@ -138,22 +179,38 @@
 
         // Inicialización del mapa de Leaflet
         const map = L.map('map').setView([0, 0], 2); // Vista inicial centrada
+        const marker = L.marker([0, 0]).addTo(map);
 
         // Cargar capa de OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Agregar marcador y escuchar clic en el mapa
-        const marker = L.marker([0, 0]).addTo(map);
-        let selectedLatLng = null; // Variable para almacenar la ubicación seleccionada
-        map.on('click', function(e) {
-            marker.setLatLng(e.latlng);
-            selectedLatLng = e.latlng; // Guardar las coordenadas seleccionadas
-            document.getElementById("saveBtn").disabled = false; // Habilitar el botón de guardar
+        // Configuración del mapa para el pop-up
+        const popupMap = L.map('popupMap').setView([0, 0], 13); // Vista inicial centrada en el pop-up
+        const popupMarker = L.marker([0, 0]).addTo(popupMap);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(popupMap);
+
+        popupMap.on('click', function(e) {
+            popupMarker.setLatLng(e.latlng);
         });
 
-        // Función para guardar un destino en localStorage
+        let selectedLatLng = null;
+
+        // Función para abrir el pop-up
+        function openPopup() {
+            document.getElementById('popup').style.display = 'flex';
+            selectedLatLng = null;
+        }
+
+        // Función para cerrar el pop-up
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        // Función para guardar un destino
         function saveDestino() {
             const name = document.getElementById("destName").value;
             const icon = document.getElementById("iconSelect").value;
@@ -167,31 +224,14 @@
                 name: name,
                 lat: selectedLatLng.lat,
                 lng: selectedLatLng.lng,
-                icon: icon
+                icon: icon,
+                address: "Dirección obtenida dinámicamente"
             };
 
-            // Usamos geocodificación inversa para obtener la dirección
-            getAddress(newDestino.lat, newDestino.lng, function(address) {
-                newDestino.address = address;
-                destinos.push(newDestino);
-                localStorage.setItem("destinos", JSON.stringify(destinos));
-                loadDestinos(); // Actualiza la lista de destinos
-                document.getElementById("saveBtn").disabled = true; // Deshabilitar el botón después de guardar
-            });
-        }
-
-        // Función para obtener la dirección usando la API de geocodificación inversa de OpenStreetMap
-        function getAddress(lat, lng, callback) {
-            const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    const address = data.display_name || "Dirección no disponible";
-                    callback(address);
-                })
-                .catch(() => {
-                    callback("Dirección no disponible");
-                });
+            destinos.push(newDestino);
+            localStorage.setItem("destinos", JSON.stringify(destinos));
+            loadDestinos(); // Actualiza la lista de destinos
+            closePopup(); // Cerrar pop-up después de guardar
         }
 
         // Función para cargar los destinos guardados
@@ -224,7 +264,6 @@
                 li.appendChild(deleteBtn);
 
                 li.onclick = function() {
-                    // Mover el mapa a la ubicación seleccionada
                     map.setView([destino.lat, destino.lng], 13);
                     marker.setLatLng([destino.lat, destino.lng]);
                 };
