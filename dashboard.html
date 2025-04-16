@@ -103,19 +103,22 @@
                 <p><strong>Correo:</strong> ${user.email}</p>
                 <p><strong>Celular:</strong> ${user.phone}</p>`;
 
-            // Simulación de destinos frecuentes con nombres
+            // Simulación de destinos frecuentes con nombres y coordenadas
             const destinos = [
                 { name: "Casa", lat: -10.0121, lng: -70.8398 },
                 { name: "Trabajo", lat: -6.4476, lng: 14.9414 },
             ];
             const destinosList = document.getElementById("destinosList");
             destinos.forEach(destino => {
+                // Mostrar en la lista el nombre del lugar y las coordenadas
                 const li = document.createElement("li");
-                li.textContent = `${destino.name} - Lat: ${destino.lat.toFixed(4)}, Lng: ${destino.lng.toFixed(4)}`;
+                li.textContent = `${destino.name} - Cargando dirección...`;
                 li.onclick = function() {
                     // Mover el mapa a la ubicación seleccionada
                     map.setView([destino.lat, destino.lng], 13);
                     marker.setLatLng([destino.lat, destino.lng]);
+                    // Obtener la dirección de la API de geocodificación inversa
+                    getAddress(destino.lat, destino.lng, li);
                 };
                 destinosList.appendChild(li);
             });
@@ -137,6 +140,20 @@
             // Guardar el destino en localStorage
             saveDestino(e.latlng);
         });
+
+        // Función para obtener la dirección usando la API de geocodificación inversa de OpenStreetMap
+        function getAddress(lat, lng, listItem) {
+            const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const address = data.display_name || "Dirección no disponible";
+                    listItem.textContent = `${listItem.textContent.split(" - ")[0]} - ${address}`;
+                })
+                .catch(() => {
+                    listItem.textContent = `${listItem.textContent.split(" - ")[0]} - Dirección no disponible`;
+                });
+        }
 
         // Función para guardar un destino en localStorage
         function saveDestino(latlng) {
