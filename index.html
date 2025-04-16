@@ -18,39 +18,53 @@
             height: 100vh;
             text-align: center;
         }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
         h2 {
             font-size: 2.5rem;
             margin-bottom: 20px;
+            color: #333;
         }
         input[type="text"], input[type="password"] {
-            padding: 12px;
-            width: 80%;
+            padding: 15px;
+            width: 100%;
             font-size: 1rem;
-            border-radius: 20px;
-            border: 2px solid #fff;
+            border-radius: 30px;
+            border: 1px solid #ddd;
             margin-bottom: 20px;
             transition: 0.3s;
+            box-sizing: border-box;
         }
         input[type="text"]:focus, input[type="password"]:focus {
             outline: none;
-            box-shadow: 0 0 10px rgba(255, 140, 66, 0.7);
+            border-color: #ff8c42;
+            box-shadow: 0 0 10px rgba(255, 140, 66, 0.5);
         }
         button {
             background: #ff8c42;
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 15px 30px;
             font-size: 1.2rem;
-            border-radius: 20px;
+            border-radius: 30px;
             cursor: pointer;
+            width: 100%;
             transition: 0.3s;
+            margin-top: 10px;
         }
         button:hover {
             background: #ffa756;
-            box-shadow: 0 5px 15px rgba(255, 140, 66, 0.5);
         }
         p {
-            margin-top: 15px;
+            margin-top: 20px;
+            color: #333;
         }
         a {
             color: #ff8c42;
@@ -62,13 +76,15 @@
     </style>
 </head>
 <body>
-    <h2>Iniciar sesión</h2>
-    <form id="loginForm">
-        <input type="text" id="loginId" placeholder="Correo o celular" required><br>
-        <input type="password" id="loginPassword" placeholder="Contraseña" required><br>
-        <button type="submit">Ingresar</button>
-    </form>
-    <p>¿No tienes cuenta? <a href="register.html">Regístrate aquí</a></p>
+    <div class="container">
+        <h2>Iniciar sesión</h2>
+        <form id="loginForm">
+            <input type="text" id="loginId" placeholder="Correo o celular" required><br>
+            <input type="password" id="loginPassword" placeholder="Contraseña" required><br>
+            <button type="submit">Ingresar</button>
+        </form>
+        <p>¿No tienes cuenta? <a href="register.html">Regístrate aquí</a></p>
+    </div>
 
     <script src="users.js"></script>
     <script>
