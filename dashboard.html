@@ -110,7 +110,7 @@
                 <option value="🌍">Otro 🌍</option>
             </select>
         </div>
-        <button class="btn" onclick="saveDestino()">Guardar Destino</button>
+        <button class="btn" id="saveBtn" disabled>Guardar Destino</button>
     </div>
 
     <div class="destinations">
@@ -146,33 +146,34 @@
 
         // Agregar marcador y escuchar clic en el mapa
         const marker = L.marker([0, 0]).addTo(map);
+        let selectedLatLng = null; // Variable para almacenar la ubicación seleccionada
         map.on('click', function(e) {
             marker.setLatLng(e.latlng);
-            alert("Destino seleccionado: " + e.latlng.toString());
-            // Guardar el destino en localStorage
-            saveDestino(e.latlng);
+            selectedLatLng = e.latlng; // Guardar las coordenadas seleccionadas
+            document.getElementById("saveBtn").disabled = false; // Habilitar el botón de guardar
         });
 
         // Función para guardar un destino en localStorage
-        function saveDestino(latlng) {
+        function saveDestino() {
             const name = document.getElementById("destName").value;
             const icon = document.getElementById("iconSelect").value;
-            if (name === "") {
-                alert("Por favor, ingresa un nombre para el destino.");
+            if (name === "" || !selectedLatLng) {
+                alert("Por favor, ingresa un nombre y selecciona una ubicación en el mapa.");
                 return;
             }
 
             let destinos = JSON.parse(localStorage.getItem("destinos")) || [];
             const newDestino = {
                 name: name,
-                lat: latlng.lat,
-                lng: latlng.lng,
+                lat: selectedLatLng.lat,
+                lng: selectedLatLng.lng,
                 icon: icon
             };
 
             destinos.push(newDestino);
             localStorage.setItem("destinos", JSON.stringify(destinos));
             loadDestinos(); // Actualiza la lista de destinos
+            document.getElementById("saveBtn").disabled = true; // Deshabilitar el botón después de guardar
         }
 
         // Función para cargar los destinos guardados
